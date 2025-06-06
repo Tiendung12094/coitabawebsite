@@ -1,99 +1,133 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cõi Taba – Thư viện ký ức của những nhịp thở">
-  <title>coitaba.com – Thư viện Ký Ức</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(ellipse at center, #0e0e0e 0%, #000000 100%);
-      color: #ffffff;
-      text-align: center;
-      padding: 5vh 2rem;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-    }
-    .subtitle {
-      font-size: 1.3rem;
-      opacity: 0.8;
-      margin-bottom: 2rem;
-    }
-    .section {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: left;
-      background: #1a1a1a;
-      padding: 2rem;
-      border-radius: 1rem;
-    }
-    .section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .section p {
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-    .comment-input {
-      margin-top: 2rem;
-    }
-    .comment-input input, .comment-input textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      font-size: 1rem;
-    }
-    .comment-input button {
-      background-color: #3b82f6;
-      color: white;
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-    .comment-input button:hover {
-      background-color: #2563eb;
-    }
-    .footer {
-      margin-top: 5vh;
-      font-size: 0.9rem;
-      opacity: 0.5;
-    }
-    .note {
-      margin-top: 3rem;
-      font-style: italic;
-      font-size: 0.95rem;
-      opacity: 0.6;
-    }
-  </style>
-</head>
-<body>
-  <h1>Cõi Taba</h1>
-  <div class="subtitle">“Thư viện Ký Ức – nơi nhịp thở trở thành dòng chảy ký ức”</div>
+export default function CoitabaHome() {
+  const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [file, setFile] = useState(null);
+  const [posts, setPosts] = useState([]);
 
-  <div class="section">
-    <h2>🧘 Viết lại hơi thở của bạn</h2>
-    <div class="comment-input">
-      <input type="text" placeholder="Tên của bạn (hoặc để trống nếu muốn ẩn danh)..." />
-      <input type="email" placeholder="Email (để lưu hồ sơ người gửi)..." />
-      <textarea rows="6" placeholder="Chia sẻ của bạn hôm nay..."></textarea>
-      <button>Gửi vào Thư viện Ký Ức</button>
-    </div>
-  </div>
+  const handleLogin = () => {
+    setUser({ name: "Fen User" });
+  };
 
-  <div class="note">
-    Những lời nhắn không cần giữ lại... sẽ được cuốn trôi về gió tại <strong>gio.coitaba.com</strong>
-  </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newPost = {
+      title,
+      content,
+      file,
+      author: user ? user.name : "Ẩn danh",
+    };
+    setPosts([newPost, ...posts]);
+    setTitle("");
+    setContent("");
+    setFile(null);
+  };
 
-  <div class="footer">© 2025 coitaba.com – Diễn đàn của những nhịp thở</div>
-</body>
-</html>
+  return (
+    <motion.div
+      className="min-h-screen bg-gradient-to-br from-[#e0f7fa] via-[#e8eaf6] to-[#f3e5f5] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      {/* Header */}
+      <motion.header
+        className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between py-4 border-b border-gray-300 dark:border-gray-600"
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="flex flex-col md:flex-row gap-2 items-start md:items-center w-full md:w-auto">
+          <h1 className="text-2xl font-bold text-[#37474f] dark:text-white">Coitaba – Thư viện Ký Ức</h1>
+        </div>
+        <div className="flex flex-col md:flex-row gap-2 items-start md:items-center w-full md:w-2/3">
+          <Input placeholder="Tìm kiếm truyện, ký ức..." className="w-full" />
+          {!user && <Button onClick={handleLogin}>Đăng nhập</Button>}
+          {user && <span className="text-sm text-gray-500 dark:text-gray-300">Xin chào, {user.name}</span>}
+        </div>
+      </motion.header>
+
+      {/* Đăng truyện mới */}
+      {user && (
+        <motion.section
+          className="mt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto bg-white/70 dark:bg-gray-800 backdrop-blur-md p-4 rounded-xl shadow">
+            <Input 
+              placeholder="Tiêu đề truyện..." 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+            />
+            <Textarea
+              placeholder="Viết nội dung truyện..."
+              rows={6}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <Input
+              type="file"
+              accept="image/*,video/mp4,video/webm"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+            <Button type="submit" className="w-full">Đăng truyện</Button>
+          </form>
+        </motion.section>
+      )}
+
+      {/* Danh sách truyện */}
+      <main className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
+        <motion.section
+          className="space-y-4"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <h2 className="text-xl font-semibold text-[#5e35b1] dark:text-purple-300">Truyện của Z</h2>
+          {["Chương 8 – Bức thư tình đầu tiên", "Chương 7 – Mình đã thở chưa?"]
+            .map((title, i) => (
+              <Card key={i} className="bg-white/80 dark:bg-gray-800 backdrop-blur-md">
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-bold mb-2 text-[#283593] dark:text-blue-300">{title}</h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">Đây là một đoạn mở đầu trích dẫn từ truyện...</p>
+                </CardContent>
+              </Card>
+            ))}
+        </motion.section>
+
+        <motion.section
+          className="space-y-4"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <h2 className="text-xl font-semibold text-[#00838f] dark:text-cyan-300">Truyện của bạn</h2>
+          {posts.length === 0 && (
+            <Card className="bg-white/80 dark:bg-gray-800 backdrop-blur-md">
+              <CardContent className="p-4 text-sm text-gray-500 dark:text-gray-400">Chưa có bài viết nào.</CardContent>
+            </Card>
+          )}
+          {posts.map((post, i) => (
+            <Card key={i} className="bg-white/80 dark:bg-gray-800 backdrop-blur-md">
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold mb-2 text-[#00695c] dark:text-teal-300">{post.title}</h3>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{post.content}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 italic">Tác giả: {post.author}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.section>
+      </main>
+    </motion.div>
+  );
+}
+
